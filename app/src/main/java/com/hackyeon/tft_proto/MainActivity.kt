@@ -2,6 +2,10 @@ package com.hackyeon.tft_proto
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.databinding.DataBindingUtil
+import androidx.databinding.ViewDataBinding
+import androidx.lifecycle.MutableLiveData
 import com.hackyeon.tft_proto.data.DataObject.API_KEY
 import com.hackyeon.tft_proto.data.DataObject.BASE_URL
 import com.hackyeon.tft_proto.data.SummonerData
@@ -20,21 +24,29 @@ class MainActivity : AppCompatActivity() {
     private lateinit var retrofit: Retrofit
     private lateinit var retrofitService: RetrofitService
     private lateinit var realm: Realm
-    private lateinit var binding: ActivityMainBinding // 임시 바인딩
+    private lateinit var binding: ActivityMainBinding
+    var liveSummonerData = MutableLiveData(SummonerData())
+//    private var summonerData = SummonerData()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        binding.lifecycleOwner = this@MainActivity
+        binding.activity = this@MainActivity
 
         initView()
-        clickedButton()
+
+        // 임시 버튼 리스너
+        binding.searchButton.setOnClickListener {
+            loadSummoner(binding.searchSummonerEditText.text.toString())
+        }
     }
 
-    private fun initView(){
+    private fun initView() {
         // 통신 설정
         var httpClient = OkHttpClient().newBuilder()
-            .addInterceptor (Interceptor { chain ->
+            .addInterceptor(Interceptor { chain ->
                 var request = chain.request().newBuilder()
                     .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/93.0.4577.82 Safari/537.36")
                     .addHeader("Accept-Language", "ko-KR,ko;q=0.9,en-US;q=0.8,en;q=0.7")
@@ -57,38 +69,44 @@ class MainActivity : AppCompatActivity() {
         realm = Realm.getDefaultInstance()
     }
 
-
-    // 임시 기능
-    private fun clickedButton(){
-        binding.searchButton.setOnClickListener {
-            loadSummoner(binding.searchSummonerEditText.text.toString())
-        }
-    }
-
-    private fun loadSummoner(summonerName: String){
-        retrofitService.getSummoner(summonerName).enqueue(object: Callback<SummonerData>{
+    private fun loadSummoner(summonerName: String) {
+        retrofitService.getSummoner(summonerName).enqueue(object : Callback<SummonerData> {
             override fun onResponse(call: Call<SummonerData>, response: Response<SummonerData>) {
-                if(response.isSuccessful){
+                if (response.isSuccessful) {
                     //todo 통신 성공 기능
+                    val body = response.body()
 
-                    // 임시기능
-                    var body = response.body()
-                    binding.textView.text = body?.id
+                    Log.d("aabb", "id: ${body?.id}")
 
+                    liveSummonerData.value = SummonerData(body?.id,
+                        body?.accountId,
+                        body?.puuid,
+                        body?.name,
+                        body?.profileIconId,
+                        body?.revisionDate,
+                        body?.summonerLevel)
+//                    liveSummonerData.value?.setData(
+//                        body?.id,
+//                        body?.accountId,
+//                        body?.puuid,
+//                        body?.name,
+//                        body?.profileIconId,
+//                        body?.revisionDate,
+//                        body?.summonerLevel
+//                    )
+                    Log.d("aabb", "data: ${liveSummonerData.value?.id}")
+                } else {
+                    liveSummonerData.value?.setNull()
                 }
             }
 
             override fun onFailure(call: Call<SummonerData>, t: Throwable) {
-                //todo 통신 실패 알리미
+                liveSummonerData.value?.setNull()
             }
         })
 
 
-
     }
-
-
-
 
 
 }

@@ -14,7 +14,7 @@ class MyApplication: Application() {
             .name("tft.realm")
             .allowQueriesOnUiThread(true)
             .allowWritesOnUiThread(true)
-            .schemaVersion(0)
+            .schemaVersion(1)
             .build()
 
         Realm.setDefaultConfiguration(config)
