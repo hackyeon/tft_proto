@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadSummoner(summonerName: String){
-        retrofitService.getSummoner("").enqueue(object: Callback<SummonerData>{
+        retrofitService.getSummoner(summonerName).enqueue(object: Callback<SummonerData>{
             override fun onResponse(call: Call<SummonerData>, response: Response<SummonerData>) {
                 if(response.isSuccessful){
                     //todo 통신 성공 기능

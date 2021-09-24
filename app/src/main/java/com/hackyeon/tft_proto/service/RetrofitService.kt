@@ -12,6 +12,6 @@ interface RetrofitService {
 
     @GET(GET_SUMMONER)
     fun getSummoner(
-        @Path("summonerName") summonerName: String
+        @Path("summonerName")summonerName: String
     ): Call<SummonerData>
 }
