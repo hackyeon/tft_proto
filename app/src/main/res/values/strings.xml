@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">tft_proto</string>
+    <string name="save">저장</string>
 </resources>

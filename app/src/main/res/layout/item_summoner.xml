@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout>
+    <data>
+        <variable
+            name="summoner"
+            type="com.hackyeon.tft_proto.data.SummonerData" />
+
+        <variable
+            name="viewModel"
+            type="com.hackyeon.tft_proto.view_model.SummonerViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> viewModel.deleteSummoner(summoner.name)}"
+        android:layout_marginHorizontal="60dp"
+        android:layout_marginBottom="10dp">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            app:imageGlide="@{summoner.profileIconId}"
+            android:id="@+id/profileImageView"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:text="@{summoner.name}"
+            android:id="@+id/nameTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toTopOf="@id/levelTextView"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/profileImageView"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:text="@{summoner.summonerLevel.toString()}"
+            android:id="@+id/levelTextView"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/nameTextView"
+            app:layout_constraintStart_toStartOf="@id/nameTextView"
+            app:layout_constraintTop_toBottomOf="@id/nameTextView" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
